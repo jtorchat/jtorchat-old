@@ -1,0 +1,43 @@
+Important:
+There is a new category for our buddys.
+The holy category means buddys where is sure that the buddy is a friend.
+Only from these Buddys you can receive files and not block wherever he do.
+Normal buddys more control in the future to defeat a ddos.
+When you have write with on buddy you can set he in the holy group and transfer data but 
+when you know that somebody is a ddos or a spamer you can transfer him in the blacklist.
+In the blacklist there is no connection between your and the other, 
+the other can try to send a message but you ignore that.
+I hope that we can in the future increase the security versus ddos.
+
+before I forget, welcome to github :)
+
+
++++ jtorchat V0.7.7 at Mar 2012 - first try to defeat ddos, more languages and icon control
+
++++ jtorchat V0.7.6 at Mar 2012 - fixes
+
++++ jtorchat V0.7.5 at Mar 2012 - read the readme from the file
+
++++ jtorchat V0.7.4 at Feb 2012 - many fixes
+
++++ jtorchat V0.7.3 at Feb 2012 - File-Transfer linux bug fix
+
++++ jtorchat V0.7.2 at Feb 2012 - windows & linux with obfsproxy, portable linux support, update check
+
++++ jtorchat V0.7.1 at Feb 2012 - SHIFT-ENTER and a help command for old versions (Note: Accidentally compiled only for java7, will fix in next release. Just upgrade your java)
+
++++ jtorchat V0.7.0b at Feb 2012 - only jtorchat.exe wrapper added, for the convenience of window users. (and to ensure they use the latest jre)
+
++++ jtorchat V0.7.0 at Feb 2012 - support for page, and irc-like commands like "/help", and buddysync
+
++++ jtorchat V0.6.2 at Feb 2012 - tentative support for linux (file ver was incorrectly set V6.2)
+
++++ jtorchat V0.6.1 at Jan 2012 - Bugfixes, added ability to set a nick for someone
+
++++ jtorchat V0.6 at Jan 2012 - Implemented file transfer
+
++++ jtorchat V0.5.3 at Jan 2012 - Fixed DNS loopkups being made on buddy addresses!
+
++++ jtorchat V0.5.2 at Jan 2012 - Prettying up, bugfixes
+
++++ jtorchat V0.5 at Jan 2012 - Broadcast implemented 
