@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -135,7 +136,7 @@ Logger.log(Logger.WARNING, this.getClass(), "answer with error until you press s
 			String hash2 = getDigestFor(data);
 			if (hash.equals(hash2)) {
 				this.fileHandleTmp.position(start);
-				//int written = this.fileHandleTmp.write(ByteBuffer.wrap(data));
+				this.fileHandleTmp.write(ByteBuffer.wrap(data));
 				//Logger.oldOut.println("written: " + written);
 				this.nextStart = start + data.length;
 				//Logger.oldOut.println("Got data " + data);
