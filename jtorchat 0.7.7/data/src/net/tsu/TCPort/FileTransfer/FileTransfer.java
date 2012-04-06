@@ -16,8 +16,8 @@ import net.tsu.TCPort.util.Util;
 
 public class FileTransfer {
 
-	public static HashMap<String, FileSender> senders = new HashMap<String, FileSender>();
-	public static HashMap<String, FileReceiver> receivers = new HashMap<String, FileReceiver>();
+	private static HashMap<String, FileSender> senders = new HashMap<String, FileSender>();
+	private static HashMap<String, FileReceiver> receivers = new HashMap<String, FileReceiver>();
 
 	private static Listener lis;
 
@@ -26,7 +26,8 @@ public class FileTransfer {
 			// wth
 			return;
 		}
-		APIManager.incomingCmdListeners.put("filename", (lis = new Listener()));
+		lis = new Listener();
+		APIManager.incomingCmdListeners.put("filename", lis);
 		APIManager.incomingCmdListeners.put("filedata", lis);
 		APIManager.cmdListeners.put("filedata_ok", lis);
 		APIManager.cmdListeners.put("filedata_error", lis);
@@ -36,6 +37,8 @@ public class FileTransfer {
 
 	private static class Listener implements IncomingCommandListener, CommandListener {
 
+		private static final String COMMAND_SEPARATOR = " ";
+
 		// Util.readTillLinebreak(is)
 		@Override
 		public void onCommand(Buddy buddy, String command, InputStream is) {
@@ -44,7 +47,7 @@ public class FileTransfer {
 			//Logger.oldOut.println("ft: " + command);
 			try {
 			if (command.startsWith("filename")) {
-				String[] spl = Util.readStringTillChar(is, '\n').split(" ", 4);
+				String[] spl = Util.readStringTillChar(is, '\n').split(COMMAND_SEPARATOR, 4);
 				String id = spl[0];
 				long fileSize = Long.valueOf(spl[1]);
 				int blockSize = Integer.valueOf(spl[2]);
@@ -88,7 +91,7 @@ public class FileTransfer {
 				String hash = Util.readStringTillChar(is, ' ');
 				byte[] data = Util.unescape(Util.readBytesTillChar(is, '\n'));
 
-				FileReceiver receiver = receivers.get(buddy.getAddress() + " " + id);
+				FileReceiver receiver = receivers.get(buddy.getAddress() + COMMAND_SEPARATOR + id);
 				if (receiver != null) {
 					//int amountExpected = (int) ((receiver.fileSize - start) > receiver.blockSize ? receiver.blockSize : receiver.fileSize - start);
 					// ByteBuffer dataBuf = ByteBuffer.allocate(amountExpected);
@@ -115,7 +118,7 @@ public class FileTransfer {
 					}
 			}
 			} catch (IOException ioe) {
-				Logger.log(Logger.NOTICE, "FileTransfer", "IOException on " + buddy.toString(true) + " " + ioe.getLocalizedMessage());
+				Logger.log(Logger.NOTICE, "FileTransfer", "IOException on " + buddy.toString(true) + COMMAND_SEPARATOR + ioe.getLocalizedMessage());
 				try {
 					buddy.disconnect();
 				} catch (IOException e) {
@@ -134,11 +137,11 @@ public class FileTransfer {
 		public void onCommand(Buddy buddy, String s) {
 
 			 if (s.startsWith("filedata_ok ")) {
-					String[] spl = s.split(" ", 3);
+					String[] spl = s.split(COMMAND_SEPARATOR, 3);
 					String id = spl[1];
 					long start = Long.valueOf(spl[2]);
 
-					FileSender sender = senders.get(buddy.getAddress() + " " + id);
+					FileSender sender = senders.get(buddy.getAddress() + COMMAND_SEPARATOR + id);
 					if (sender != null)
 						sender.recievedOk(start);
 					else
@@ -153,11 +156,11 @@ public class FileTransfer {
 							}
 						}
 				} else if (s.startsWith("filedata_error ")) {
-					String[] spl = s.split(" ", 3);
+					String[] spl = s.split(COMMAND_SEPARATOR, 3);
 					String id = spl[1];
 					long start = Long.valueOf(spl[2]);
 
-					FileSender sender = senders.get(buddy.getAddress() + " " + id);
+					FileSender sender = senders.get(buddy.getAddress() + COMMAND_SEPARATOR + id);
 					if (sender != null)
 						sender.restart(start);
 					else
@@ -172,17 +175,26 @@ public class FileTransfer {
 							}
 						}
 				} else if (s.startsWith("file_stop_sending ")) {
-					String id = s.split(" ", 2)[1]; // NOTE - in pytorchat this is done by self.id = self.blob doesnt make sense
+					String id = s.split(COMMAND_SEPARATOR, 2)[1]; // NOTE - in pytorchat this is done by self.id = self.blob doesnt make sense
 
-					FileSender sender = senders.get(buddy.getAddress() + " " + id);
+					FileSender sender = senders.get(buddy.getAddress() + COMMAND_SEPARATOR + id);
 					if (sender != null)
 						sender.close();
 				} else if (s.startsWith("file_stop_receiving ")) {
-					String id = s.split(" ", 2)[1]; // NOTE - in pytorchat this is done by self.id = self.blob doesnt make sense
-					FileReceiver receiver = receivers.get(buddy.getAddress() + " " + id);
+					String id = s.split(COMMAND_SEPARATOR, 2)[1]; // NOTE - in pytorchat this is done by self.id = self.blob doesnt make sense
+					FileReceiver receiver = receivers.get(buddy.getAddress() + COMMAND_SEPARATOR + id);
 					if (receiver != null)
 						receiver.close();
 				}
-		
+
 	}}
+
+	public static HashMap<String, FileSender> getSenders() {
+		return senders;
+	}
+
+	public static HashMap<String, FileReceiver> getReceivers() {
+		return receivers;
+	}
+
 }

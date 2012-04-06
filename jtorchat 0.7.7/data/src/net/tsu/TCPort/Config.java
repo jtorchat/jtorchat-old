@@ -7,10 +7,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
-
 import net.tsu.TCPort.util.Regex;
 import net.tsu.TCPort.util.Util;
-import net.tsu.TCPort.language;
 
 
 public class Config {
@@ -62,66 +60,66 @@ public class Config {
 	public static String Torbinary;
 	public static String controlfile = "controlfile";
 	public static String answer="";
-	
-// Linux only
-public static String Torclose="torclose.sh";
-public static String torpid=Integer.toString(Util.myRandom(1000, 9999));
-// Only Windows
-public static String TorWintorrc="torrc.txt";
-public static String TorWintorrcobf="torrcobf.txt";
-public static String Tortorrc;
+
+	// Linux only
+	public static String Torclose="torclose.sh";
+	public static String torpid=Integer.toString(Util.myRandom(1000, 9999));
+	// Only Windows
+	public static String TorWintorrc="torrc.txt";
+	public static String TorWintorrcobf="torrcobf.txt";
+	public static String Tortorrc;
 
 
 
-public static int image_size;
-public static int icon_size;
-public static int icon_space;
-public static String icon_folder;
+	public static int image_size;
+	public static int icon_size;
+	public static int icon_space;
+	public static String icon_folder;
 
 
 	static {
 
-if (TCPort.base_pwd != null )
-{
-BASE_DIR = TCPort.base_pwd;
-}
-else	
-	{
-		String x = System.getProperty("java.class.path");
-		for (String s : x.split(";")) // prioritize finding the jar
-			if (Regex.match(".*?[/\\\\]{0,1}jtorchat.*?\\.jar", s.toLowerCase())) {
-				BASE_DIR = new File(s).isDirectory() ? new File(s).getPath() : new File(s).getParent();
-				break;
-			}
-		if (BASE_DIR == null || BASE_DIR.length() == 0)
-			for (String s : x.split(";"))
-				if (!Regex.match("bin(?!.)", s.toLowerCase())) { // dodgy ~
-					BASE_DIR = new File(s).isDirectory() ? new File(s).getParent() : new File(s).getParent();
-					break;
-				} else if (!Regex.match("build(?!.)", s.toLowerCase())) { // dodgy ~
-					BASE_DIR = new File(s).isDirectory() ? new File(s).getParent() : new File(s).getParent();
+		if (TCPort.base_pwd != null )
+		{
+			BASE_DIR = TCPort.base_pwd;
+		}
+		else
+		{
+			String x = System.getProperty("java.class.path");
+			for (String s : x.split(";")) // prioritize finding the jar
+				if (Regex.match(".*?[/\\\\]{0,1}jtorchat.*?\\.jar", s.toLowerCase())) {
+					BASE_DIR = new File(s).isDirectory() ? new File(s).getPath() : new File(s).getParent();
 					break;
 				}
-		if (BASE_DIR == null)
-			BASE_DIR = "";
-		if (BASE_DIR.length() > 0) {
-			if (!BASE_DIR.endsWith("/") && !BASE_DIR.endsWith("\\"))
-				BASE_DIR += "/";
+			if (BASE_DIR == null || BASE_DIR.length() == 0)
+				for (String s : x.split(";"))
+					if (!Regex.match("bin(?!.)", s.toLowerCase())) { // dodgy ~
+						BASE_DIR = new File(s).isDirectory() ? new File(s).getParent() : new File(s).getParent();
+						break;
+					} else if (!Regex.match("build(?!.)", s.toLowerCase())) { // dodgy ~
+						BASE_DIR = new File(s).isDirectory() ? new File(s).getParent() : new File(s).getParent();
+						break;
+					}
+			if (BASE_DIR == null)
+				BASE_DIR = "";
+			if (BASE_DIR.length() > 0) {
+				if (!BASE_DIR.endsWith("/") && !BASE_DIR.endsWith("\\"))
+					BASE_DIR += "/";
+			}
 		}
-	}
-	
-	Logger.log(Logger.NOTICE, "Config", "Using " + BASE_DIR + " as BASE_DIR");
-        String os = System.getProperty("os.name").toLowerCase(); // Operating System details as a CASE INSENSTIVE string
 
-   
-        DATA_DIR = "data/";
+		Logger.log(Logger.NOTICE, "Config", "Using " + BASE_DIR + " as BASE_DIR");
+		String os = System.getProperty("os.name").toLowerCase(); // Operating System details as a CASE INSENSTIVE string
+
+
+		DATA_DIR = "data/";
 		CONFIG_DIR = Config.BASE_DIR + Config.DATA_DIR + "config/";
 		DOWNLOAD_DIR =  Config.BASE_DIR + Config.DATA_DIR + "downloads/";
 		LOG_DIR =  Config.BASE_DIR + Config.DATA_DIR + "log/";
 		MESSAGE_DIR =  Config.BASE_DIR + Config.DATA_DIR + "offlinemsgs/";
 		PAGE_DIR =  Config.BASE_DIR + Config.DATA_DIR + "page/";
 		TOR_DIR = Config.BASE_DIR + Config.DATA_DIR + "Tor/";
-	    LANG_DIR = Config.BASE_DIR + Config.DATA_DIR + "lang/";
+		LANG_DIR = Config.BASE_DIR + Config.DATA_DIR + "lang/";
 		//Create all important dir
 		new File(CONFIG_DIR).mkdirs();
 		new File(DOWNLOAD_DIR).mkdirs();
@@ -140,20 +138,20 @@ else
 		Logger.log(Logger.NOTICE, "Config", "Using " + LANG_DIR + " as LANG_DIR");
 
 		prop = new Properties();
-		try {
-			prop.load(new FileInputStream(CONFIG_DIR + "settings.ini"));
-		} catch (FileNotFoundException e) {
-//			e.printStackTrace();
-		} catch (IOException e) {
-//			e.printStackTrace();
+		File settingsFile = new File(CONFIG_DIR + "settings.ini");
+		if (settingsFile.exists() && settingsFile.isFile() && settingsFile.canRead()) {
+			try {
+				prop.load(new FileInputStream(settingsFile));
+			} catch (IOException e) {
+				// Do nothing
+			}
 		}
-		
-		
 
-			us = assign("ourId", null, prop);
-	
-				SOCKS_PORT = assignInt("SOCKS_PORT", 11160, prop);
-				LOCAL_PORT = assignInt("LOCAL_PORT", 8978, prop);
+
+		us = assign("ourId", null, prop);
+
+		SOCKS_PORT = assignInt("SOCKS_PORT", 11160, prop);
+		LOCAL_PORT = assignInt("LOCAL_PORT", 8978, prop);
 
 
 		TCPort.profile_name = assign("profile_name", null, prop);
@@ -175,53 +173,53 @@ else
 		Config.offlineMod = assignInt("offlineMod", 0, prop);
 		Config.image_size  = assignInt("image_size", 16, prop);
 		Config.icon_size = assignInt("icon_size", 16, prop);
-		Config.icon_space = assignInt("icon_space", 2, prop);			
+		Config.icon_space = assignInt("icon_space", 2, prop);
 		Config.icon_folder = assign("ICON", "orginal", prop);
 
-		
+
 		Config.ICON_DIR = Config.BASE_DIR + Config.DATA_DIR + "icon/" + icon_folder;
 		if(!new File(ICON_DIR).exists())
 		{
-		Config.ICON_DIR = Config.BASE_DIR + Config.DATA_DIR + "icon/" + "orginal";
-		}	
+			Config.ICON_DIR = Config.BASE_DIR + Config.DATA_DIR + "icon/" + "orginal";
+		}
 		Logger.log(Logger.NOTICE, "Config", "Using " + ICON_DIR + " as ICON_DIR");
-		
+
 		if (Config.buddyStart == 1 & Config.offlineMod == 0)
 		{
-		nowstart=sync;
-		}
-		
-		if (Config.updateStart == 1 & Config.offlineMod == 0)
-		{
-		nowstartupdate=update;
+			nowstart=sync;
 		}
 
-		
+		if (Config.updateStart == 1 & Config.offlineMod == 0)
+		{
+			nowstartupdate=update;
+		}
+
+
 		if (os.indexOf("win") >= 0) {
-		if(obfsproxy == 0)
-		{
-		Torbinary=TorWin;
-		Tortorrc=TorWintorrc;
-		}
-		else
-		{
-			Torbinary=TorWinobf;
-			Tortorrc=TorWintorrcobf;			
-		}
+			if(obfsproxy == 0)
+			{
+				Torbinary=TorWin;
+				Tortorrc=TorWintorrc;
+			}
+			else
+			{
+				Torbinary=TorWinobf;
+				Tortorrc=TorWintorrcobf;
+			}
 		} else if (os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0) {
-        if(obfsproxy == 0)
-        {
-		Torbinary=TorLin;
-        }
-        else
-        {
-    	Torbinary=TorLinobf;     	
-        }
+			if(obfsproxy == 0)
+			{
+				Torbinary=TorLin;
+			}
+			else
+			{
+				Torbinary=TorLinobf;
+			}
 		}
 		answer = language.loadlang();
 		Logger.log(Logger.INFO, "Config", "Using " + SOCKS_PORT + " as socks port and " + LOCAL_PORT + " as local port.");
 	}
-	
+
 	public static void reloadSettings() { // reloads almost all settings
 
 		new File(CONFIG_DIR).mkdirs();
@@ -233,13 +231,13 @@ else
 		} catch (IOException e) {
 			System.err.println(e.getLocalizedMessage());
 		}
-		
-		
+
+
 		SOCKS_PORT = assignInt("SOCKS_PORT", 11160, prop);
 		LOCAL_PORT = assignInt("LOCAL_PORT", 8978, prop);
-			us = assign("ourId", null, prop);
+		us = assign("ourId", null, prop);
 
-		
+
 		TCPort.profile_name = assign("profile_name", null, prop);
 		TCPort.profile_text = assign("profile_text", null, prop);
 		Config.lang = assign("lang", dlang, prop);
@@ -261,17 +259,17 @@ else
 		Config.icon_size = assignInt("icon_size", 20, prop);
 		Config.icon_space = assignInt("icon_space", 2, prop);
 		Config.icon_folder = assign("ICON", "orginal", prop);
-		
+
 		if (Config.buddyStart == 1)
 		{
-		nowstart=sync;
+			nowstart=sync;
 		}
-		
+
 		if (Config.updateStart == 1)
 		{
-		nowstartupdate=update;
+			nowstartupdate=update;
 		}
-		
+
 		Logger.log(Logger.INFO, "Config", "Using " + SOCKS_PORT + " as socks port and " + LOCAL_PORT + " as local port.");
 	}
 
@@ -280,31 +278,35 @@ else
 	public static final int KEEPALIVE_INTERVAL = (int) (Math.random()*120); //120;
 	public static final int MAX_UNANSWERED_PINGS = 4;
 	public static final int CONNECT_TIMEOUT = 70;
-	
+
 	public static final String CLIENT = "JTC [T2]";
-	
+
 	private static int assignInt(String string, int def, Properties prop) {
 		String x = (String) prop.get(string);
 		int i = def;
-		if (x != null)
+		if (x != null) {
 			try {
 				i = Integer.parseInt(x);
 			} catch (NumberFormatException nfe) {
 				System.err.println(nfe.getLocalizedMessage());
 			}
-		if (i == def)
+		}
+		if (i == def) {
 			Logger.log(Logger.NOTICE, "Config", string + " not defined using " + def);
+		}
 		return i;
 	}
 
 	public static String assign(String string, String s, Properties prop) {
 		String x = (String) prop.get(string);
 		String ret = s;
-		if (x != null)
+		if (x != null) {
 			ret = x;
-		if (ret == null && s == null || s != null && ret != null && ret.equals(s))
+		}
+		if (ret == null && s == null || s != null && ret != null && ret.equals(s)) {
 			Logger.log(Logger.NOTICE, "Config", string + " not defined using " + s);
+		}
 		return ret;
 	}
-	
+
 }
