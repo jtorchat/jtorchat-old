@@ -1,5 +1,6 @@
 package net.tsu.TCPort;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -12,7 +13,7 @@ import javax.swing.JTextField;
 
 
 public class TCPort {
-    public static String base_pwd = null;
+	public static String base_pwd = "";
 	public static String profile_name; // = "JTCDev-Tsu";
 	public static String profile_text; // = "JTCDev-Text";
 	public static String status = "available"; // available away xa
@@ -20,25 +21,29 @@ public class TCPort {
 	@SuppressWarnings("unused")
 	private static boolean halted;
 
-	
-	
-	public static void main(String[] args) {
-		
 
-		
-		// Set Base-Path by Problem
-		if (args.length > 0)
-		{
-		base_pwd = args[0]+"/";
-		}
-		
-		
+
+	public static void main(String[] args) {
+
+
 		try {
-			if (getLogInstance() != null)
+
+			// Set Base-Path by Problem
+			if (args.length > 0)
 			{
-			if(Config.visiblelog == 1) {getLogInstance().setVisible(true);}
+				base_pwd = args[0];
 			}
-			
+			base_pwd = new File(base_pwd).getCanonicalPath() + "/";
+
+
+			final JFrame logInstance = getLogInstance();
+			if (logInstance != null)
+			{
+				if(Config.visiblelog == 1) {
+					logInstance.setVisible(true);
+				}
+			}
+
 			Runtime.getRuntime().addShutdownHook(new Thread() {
 
 				@Override
@@ -62,14 +67,14 @@ public class TCPort {
 					}
 				}
 			});
-			
-			
 
-TorLoader.loadTor();
-			
-				
-				
-				// new Gui().init();
+
+
+			TorLoader.loadTor();
+
+
+
+			// new Gui().init();
 			runInit("net.tsu.TCPort.Gui.Gui");
 			launched = true;
 			try {
@@ -92,9 +97,9 @@ TorLoader.loadTor();
 			runStaticInit("net.tsu.TCPort.Broadcast.Broadcast");
 			runStaticInit("net.tsu.TCPort.FileTransfer.FileTransfer");
 			// FileTransfer.init(); // doesnt work atm
-			
-			
-			
+
+
+
 			if (!BuddyList.buds.containsKey(Config.us)) {
 				new Buddy(Config.us, null).connect();
 			}
@@ -119,7 +124,7 @@ TorLoader.loadTor();
 								} else if (l.startsWith("raw ")) { // send raw messaage to a buddy
 									BuddyList.buds.get(l.split(" ")[1]).sendRaw(l.split(" ", 3)[2]);
 
-							}}
+								}}
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -127,8 +132,8 @@ TorLoader.loadTor();
 						e.printStackTrace();
 					}
 				}
-				
-				
+
+
 			}, "Starting console.", "Console thread");
 			ThreadManager.registerWork(ThreadManager.DAEMON, new Runnable() {
 
@@ -136,7 +141,7 @@ TorLoader.loadTor();
 				public void run() {
 					while (true) {
 						try {
-							
+
 							if (Config.nowstart != "")
 							{
 								BuddyList.loadBuddiesRemote(Config.nowstart);
@@ -145,21 +150,21 @@ TorLoader.loadTor();
 							if (Config.nowstartupdate != "")
 							{
 								Config.LastCheck = Update.loadUpdate(Config.nowstartupdate);
-								
-								
+
+
 								if (Config.LastCheck != "close")
 								{
-								JTextField jtf = new JTextField();
-								jtf.setEditable(false);
-								jtf.setText(Config.LastCheck);
-					     		JOptionPane.showMessageDialog(null, jtf, "Update Check", JOptionPane.PLAIN_MESSAGE);					
+									JTextField jtf = new JTextField();
+									jtf.setEditable(false);
+									jtf.setText(Config.LastCheck);
+									JOptionPane.showMessageDialog(null, jtf, "Update Check", JOptionPane.PLAIN_MESSAGE);
 								}
-					     		
-					     		
-					     		Config.nowstartupdate = "";
+
+
+								Config.nowstartupdate = "";
 							}
 
-							
+
 							for (Buddy b : BuddyList.buds.values()) {
 								if (b.getConnectTime() != -1 && System.currentTimeMillis() - b.getConnectTime() > Config.CONNECT_TIMEOUT * 1000) {
 									// checks if buddy hasnt finished connecting within CONNECT_TIMEOUT seconds
@@ -174,7 +179,7 @@ TorLoader.loadTor();
 									b.connect();
 									Logger.log(Logger.INFO, "Status Thread", "Connection reset for " + b.getAddress());
 								}
-								
+
 								if (b.getStatus() >= Buddy.ONLINE && (b.ourSock == null || b.theirSock == null || b.ourSock.isClosed() || b.theirSock.isClosed())) {
 									if (b.ourSock != null)
 										b.ourSock.close();
@@ -198,7 +203,7 @@ TorLoader.loadTor();
 								}
 								if (b.ourSock != null && b.theirSock != null && b.recievedPong && b.getTimeSinceLastStatus() > (Config.KEEPALIVE_INTERVAL - 20) * 1000)
 									b.sendStatus(); // Sends status every 100 seconds supposed to be every
-													// KEEPALIVE_INTERVAL but 20 seconds shorter just incase :\
+								// KEEPALIVE_INTERVAL but 20 seconds shorter just incase :\
 								if (b.ourSock != null && b.ourSockOut != null && !b.recievedPong && (System.currentTimeMillis() - b.lastPing) > (Config.KEEPALIVE_INTERVAL / 4) * 1000)
 									b.sendPing(); //
 								if (b.reconnectAt != -1 && System.currentTimeMillis() - b.reconnectAt > 0) {

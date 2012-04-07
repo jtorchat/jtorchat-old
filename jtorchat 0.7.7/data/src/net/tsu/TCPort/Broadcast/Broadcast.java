@@ -163,6 +163,7 @@ public class Broadcast {
 
 	private static class Listener implements APIListener, CommandListener {
 		
+		@Override
 		public void onCommand(Buddy b, String s) {
 			if (s.startsWith("broadcast ")) {
 				String tag = s.split(" ")[1];
@@ -269,6 +270,7 @@ public class Broadcast {
 			}
 		}
 		
+		@Override
 		public void onStatusChange(Buddy buddy, byte newStatus, byte oldStatus) {
 			if (myTags == null)
 				return;
@@ -281,11 +283,17 @@ public class Broadcast {
 			}
 		}
 	
+		@Override
 		public void onProfileNameChange(Buddy buddy, String newName, String oldName) {}
+		@Override
 		public void onProfileTextChange(Buddy buddy, String newText, String oldText) {}
+		@Override
 		public void onAddMe(Buddy buddy) {}
+		@Override
 		public void onMessage(Buddy buddy, String s) {}
+		@Override
 		public void onNewBuddy(Buddy buddy) {}
+		@Override
 		public void onBuddyRemoved(Buddy buddy) {}
 	}
 
