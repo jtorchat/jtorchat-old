@@ -58,7 +58,7 @@ public class FileReceiver implements IFileTransfer {
 		this.fileSize = fileSize;
 		this.nextStart = 0;
 		this.wrongBlockNumberCount = 0;
-		FileTransfer.receivers.put(buddy.getAddress() + " " + this.id, this);
+		FileTransfer.getReceivers().put(buddy.getAddress() + " " + this.id, this);
 		
 		this.gui = new GUITransfer(this, buddy, fileName, false);
 		gui.setVisible(true);
@@ -356,7 +356,7 @@ public void closethis() { // in pytorchat the equivelant is closeForced
 		//		new File(this.fileNameTmp).renameTo(new File(this.fileNameSave));
 		//		Logger.oldOut.println("Renamed " + this.fileNameTmp + " to " + this.fileNameSave);
 		//	}
-			FileTransfer.receivers.remove(buddy.getAddress() + " " + this.id);
+			FileTransfer.getReceivers().remove(buddy.getAddress() + " " + this.id);
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}

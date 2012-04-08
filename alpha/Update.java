@@ -12,9 +12,6 @@ import java.util.Scanner;
 
 public class Update {
 	
-	public static String its(int i) {
-	    return Integer.toString(i);
-	}
 	public static String loadUpdate(String remote_bl_URL) {
 		// Don't load if no url was specified
 		if ((remote_bl_URL == null)||(remote_bl_URL == "")) {
@@ -87,7 +84,7 @@ public class Update {
 			 */
 			Logger.log(Logger.INFO, "loadUpdate",
 					"Processing updatefile");
-			int outversion = 0;
+			String outversion = null;
 	        String outtyp = null;
             String[] b;
 			while (s.hasNextLine()) {
@@ -98,7 +95,7 @@ public class Update {
 				b=l.split("!");
 				if (b.length == 5)
 				{
-				outversion = Integer.parseInt(b[1])*100 + Integer.parseInt(b[2])*10 + Integer.parseInt(b[3]);	
+				outversion = b[1] +"."+ b[2] +"."+ b[3];    	
 				}}
 				
 				if(l.startsWith("<typ!"))
@@ -119,10 +116,11 @@ public class Update {
 			// Close socket
 			ourSock.close();
 			
-			if(outversion!=0 & outtyp!=null)
+			if(outversion != null & outtyp!=null)
 			{
-			Logger.log(Logger.INFO, "loadUpdate","compare: " + its(Config.BUILD)+" with "+its(outversion));
-			if(Config.BUILD < outversion)
+			Logger.log(Logger.INFO, "loadUpdate","compare: " + Config.BUILD +" with "+ outversion);
+			
+			if(isOutdated(Config.BUILD, outversion))
 			{
 				return language.langtext[52]+outtyp;
 	
@@ -151,4 +149,36 @@ public class Update {
 
 	}
 
+	private static boolean isOutdated(String buildVersion, String outVersion) {
+		boolean isOutdated = false;
+		String[] buildVersionComponents = buildVersion.split("[.]");
+		String[] outVersionComponents = outVersion.split("[.]");
+
+		int buildVersionIndex = 0;
+		int outVersionIndex = 0;
+
+
+		while (buildVersionIndex < buildVersionComponents.length || outVersionIndex < outVersionComponents.length) {
+			final int currBuildVersionComponent = (buildVersionIndex < buildVersionComponents.length) ? 
+				Integer.parseInt(buildVersionComponents[buildVersionIndex]) : 0;
+
+			final int outBuildVersionComponent = (outVersionIndex < outVersionComponents.length) ?
+				Integer.parseInt(outVersionComponents[outVersionIndex]) : 0;
+			
+			if (currBuildVersionComponent < outBuildVersionComponent) {
+				isOutdated = true;
+				break;
+			} else if (currBuildVersionComponent > outBuildVersionComponent) {
+				// result is false
+				break;
+			}
+			
+			buildVersionIndex++;
+			outVersionIndex++;
+		}
+		
+
+		return isOutdated;
+	}
 }
+//
