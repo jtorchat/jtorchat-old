@@ -36,7 +36,7 @@ HiddenServicePort 11009 127.0.0.1:8976
 
 ## where should tor store it's cache files
 DataDirectory tor_data
-PidFile tor.pid
+
 ## some tuning
 AvoidDiskWrites 1
 LongLivedPorts 11009
