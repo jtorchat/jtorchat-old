@@ -81,4 +81,4 @@ bridge obfs2 188.40.20.215:32982
 bridge obfs2 212.112.242.160:49259
 bridge obfs2 213.108.105.129:36609
 
-ClientTransportPlugin obfs2 exec obfsproxy --managed 
+ClientTransportPlugin obfs2 exec jobf --managed 
