@@ -41,6 +41,8 @@ class GUI
 						abort 'tor exited with errors'
 					}
 				end
+
+				profile.start
 			}
 		}
 
@@ -52,6 +54,8 @@ class GUI
 	end
 
 	def stop
+		profile.stop
+
 		EM.stop_event_loop
 
 		@thread.join
