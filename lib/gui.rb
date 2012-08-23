@@ -44,8 +44,6 @@ class GUI
 			}
 		}
 
-		puts Jar.read('jtorchat/Gemfile')
-
 		@frame = JFrame.new('jtorchat')
 		@frame.getContentPane().add(JLabel.new('this be jtorchat'))
 		@frame.setDefaultCloseOperation(JFrame::EXIT_ON_CLOSE)

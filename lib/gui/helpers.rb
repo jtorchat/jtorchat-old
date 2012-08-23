@@ -17,8 +17,10 @@ require 'java'
 
 class GUI
 	module Jar
+		@object = java.lang.Object.new
+
 		def self.open (path)
-			unless io = java.lang.Object.new.java_class.resource_as_stream("/#{path}").to_io
+			unless io = @object.java_class.resource_as_stream("/#{path}").to_io
 				raise Errno::ENOENT, path
 			end
 
