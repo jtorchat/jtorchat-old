@@ -13,7 +13,7 @@
 # along with jtorchat. If not, see <http://www.gnu.org/licenses/>.
 #++
 
-require 'java'
+require 'gui/helpers'
 
 class GUI
 	import javax.swing.JFrame;
@@ -43,6 +43,8 @@ class GUI
 				end
 			}
 		}
+
+		puts Jar.read('jtorchat/Gemfile')
 
 		@frame = JFrame.new('jtorchat')
 		@frame.getContentPane().add(JLabel.new('this be jtorchat'))
