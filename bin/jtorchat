@@ -2,4 +2,5 @@
 require 'torchat'
 require 'gui'
 
-puts 'wat'
+$gui = GUI.new
+$gui.start

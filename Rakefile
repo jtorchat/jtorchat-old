@@ -1,3 +1,7 @@
+if RUBY_PLATFORM != 'java'
+	abort 'you have to run this from JRuby'
+end
+
 require 'rake'
 require 'rake/clean'
 require 'warbler'
@@ -7,7 +11,17 @@ Warbler::Task.new
 
 CLEAN.include('jtorchat.zip', 'build/jtorchat.jar')
 
-task :default => 'jar' do
+task :default => :run
+
+task :run do
+	require 'bundler'
+	Bundler.setup :default, 'development'
+
+	$:.unshift './lib'
+	load 'bin/jtorchat'
+end
+
+task :build => [:clean, :jar] do
 	FileUtils.mv 'jtorchat.jar', 'build/'
 
 	Zip::ZipFile.open 'jtorchat.zip', Zip::ZipFile::CREATE do |zip|
@@ -18,3 +32,5 @@ task :default => 'jar' do
 		}
 	end
 end
+
+
