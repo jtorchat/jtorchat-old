@@ -19,29 +19,16 @@ class GUI
 	import javax.swing.JFrame;
 	import javax.swing.JLabel;
 
-	attr_reader :profile
+	attr_reader :options, :profile
 
 	def initialize (options = {})
+		@options = options
 		@profile = options[:config] ? Torchat.new(options[:config]) : Torchat.profile(options[:profile])
 	end
 
 	def start
 		@thread = Thread.new {
 			EM.run {
-				if options[:tor] != false
-					profile.tor.file = 'torrc.txt'
-
-					profile.tor.start "#{d.profile.path || '~/.torchat'}/Tor", -> {
-						abort 'could not load the onion id' if 20.times {
-							break if File.exists? 'hidden_service/hostname'
-
-							sleep 1
-						}
-					}, -> {
-						abort 'tor exited with errors'
-					}
-				end
-
 				profile.start
 			}
 		}
